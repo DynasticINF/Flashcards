@@ -47,8 +47,9 @@ const App = () => {
 ]
 
 const [flipped, setFlipped] = useState(false);
-
 const [index, setIndex] = useState(0);
+const [answer, setAnswer] = useState('');
+const [style, setStyle] = useState();
 
 const handleFlipped = () => {
   if (flipped === false) {
@@ -58,12 +59,49 @@ const handleFlipped = () => {
   }
 }
 
+const nextIndex = () => {
+  setIndex(prev => {
+    if (prev === data.length - 1){
+      return 0;
+    } else {
+      return prev + 1 
+    }
+  })
+  setAnswer('');
+  setStyle('none');
+}
 
+const prevIndex = () => {
+  setIndex(prev => {
+    if (prev === 0){
+      return 0;
+    } else {
+      return prev - 1;
+    }
+  })
+  setAnswer('');
+  setStyle('none');
+}
 
-const handleIndex = () => {
-  const newIndex = Math.floor(Math.random() * data.length);
-  setIndex(newIndex);
-  setFlipped(false);
+const handleAnswer = (e) => {
+  setAnswer(e.target.value);
+}
+
+const validateAnswer = () => {
+  if (answer.length <= 1) {
+    return 0;
+  }
+  if(answer === data[index].Answer) {
+    setStyle(
+      '3px solid green'
+    )
+  }
+
+  if(answer !== data[index].Answer) {
+    setStyle(
+      '3px solid red'
+    )
+  }
 }
 
   return (
@@ -74,7 +112,15 @@ const handleIndex = () => {
       <div className='flashcardContainer' onClick={handleFlipped}>
         {flipped ? <div className='flashcardFront'> <Card question = {data[index].Answer}/> </div> : <div className='flashcardBack'><Card question = {data[index].Question}/></div>}
       </div>
-      <button className='nextCard' onClick={handleIndex}>Next</button>
+      <div className='interaction'>
+        <label className='headerText'>Insert Answer </label>
+        <input type='text' placeholder='Place Answer Here' className='answerStyle' style={{border: style}} onChange={handleAnswer} value={answer}></input>
+        <button className='prevCard' onClick={validateAnswer}>Submit</button> 
+      </div>
+      <div className='navigation'>
+        <button className='prevCard' onClick={prevIndex}>Prev</button>
+        <button className='nextCard' onClick={nextIndex}>Next</button>
+      </div>
     </div>
   )
 }
